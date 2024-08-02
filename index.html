@@ -30,47 +30,41 @@
                     document.getElementById('loginButton').style.display = 'none';
                     document.getElementById('scanQrButton').style.display = 'block';
 
-                    document.getElementById('scanQrButton').addEventListener('click', () => {
+                    document.getElementById('scanQrButton').addEventListener('click', async () => {
                         if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition(position => {
+                            navigator.geolocation.getCurrentPosition(async position => {
                                 const { latitude, longitude } = position.coords;
 
-                                liff.scanCode().then(result => {
+                                try {
+                                    const result = await liff.scanCode();
                                     const qrData = result.value;
                                     document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
 
-                                    liff.getProfile().then(profile => {
-                                        const userId = profile.userId;
-                                        const displayName = profile.displayName;
+                                    const profile = await liff.getProfile();
+                                    const userId = profile.userId;
+                                    const displayName = profile.displayName;
 
-                                        fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({
-                                                employeeId: qrData,
-                                                userId: userId,
-                                                displayName: displayName,
-                                                type: 'checkin',
-                                                latitude: latitude,
-                                                longitude: longitude
-                                            }),
-                                        })
-                                        .then(response => response.text())
-                                        .then(data => {
-                                            console.log('Response from server:', data); // บันทึกผลตอบกลับจากเซิร์ฟเวอร์
-                                            document.getElementById('result').innerText = data;
-                                        })
-                                        .catch(err => {
-                                            console.error('Fetch Error:', err);
-                                            alert('Failed to send data to server.');
-                                        });
+                                    const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            employeeId: qrData,
+                                            userId: userId,
+                                            displayName: displayName,
+                                            type: 'checkin',
+                                            latitude: latitude,
+                                            longitude: longitude
+                                        }),
                                     });
-                                }).catch(err => {
-                                    console.error('scanCode Error:', err);
-                                    alert('Failed to scan QR code. Please ensure you are using the LINE app.');
-                                });
+                                    const data = await response.text();
+                                    console.log('Response from server:', data);
+                                    document.getElementById('result').innerText = data;
+                                } catch (err) {
+                                    console.error('Error:', err);
+                                    alert('Failed to scan QR code or send data to server.');
+                                }
                             }, error => {
                                 console.error('Geolocation Error:', error);
                                 alert('Failed to get location.');
