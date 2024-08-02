@@ -13,7 +13,7 @@
     <div id="result"></div>
     <script>
         async function main() {
-            await liff.init({ liffId: "YOUR_LIFF_ID" });
+            await liff.init({ liffId: "2005980038-vrNQp7lR" });
 
             if (!liff.isLoggedIn()) {
                 document.getElementById('loginButton').style.display = 'block';
@@ -37,7 +37,7 @@
                                     const userId = profile.userId;
                                     const displayName = profile.displayName;
 
-                                    fetch('YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL', {
+                                    fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
