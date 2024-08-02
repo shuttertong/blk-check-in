@@ -56,6 +56,14 @@
                                                 latitude: latitude,
                                                 longitude: longitude
                                             }),
+                                        })
+                                        .then(response => response.text())
+                                        .then(data => {
+                                            document.getElementById('result').innerText = data;
+                                        })
+                                        .catch(err => {
+                                            console.error('Fetch Error:', err);
+                                            alert('Failed to send data to server.');
                                         });
                                     });
                                 }).catch(err => {
