@@ -13,57 +13,62 @@
     <div id="result"></div>
     <script>
         async function main() {
-            await liff.init({ liffId: "2005980038-vrNQp7lR" }); // ใช้ LIFF ID ที่ถูกต้อง
+            try {
+                await liff.init({ liffId: "2005980038-vrNQp7lR" }); // ใช้ LIFF ID ที่ถูกต้อง
 
-            if (!liff.isLoggedIn()) {
-                document.getElementById('loginButton').style.display = 'block';
-                document.getElementById('loginButton').addEventListener('click', () => {
-                    liff.login();
-                });
-            } else {
-                document.getElementById('loginButton').style.display = 'none';
-                document.getElementById('scanQrButton').style.display = 'block';
+                if (!liff.isLoggedIn()) {
+                    document.getElementById('loginButton').style.display = 'block';
+                    document.getElementById('loginButton').addEventListener('click', () => {
+                        liff.login();
+                    });
+                } else {
+                    document.getElementById('loginButton').style.display = 'none';
+                    document.getElementById('scanQrButton').style.display = 'block';
 
-                document.getElementById('scanQrButton').addEventListener('click', () => {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(position => {
-                            const { latitude, longitude } = position.coords;
+                    document.getElementById('scanQrButton').addEventListener('click', () => {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(position => {
+                                const { latitude, longitude } = position.coords;
 
-                            liff.scanCode().then(result => {
-                                const qrData = result.value;
-                                document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
+                                liff.scanCode().then(result => {
+                                    const qrData = result.value;
+                                    document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
 
-                                liff.getProfile().then(profile => {
-                                    const userId = profile.userId;
-                                    const displayName = profile.displayName;
+                                    liff.getProfile().then(profile => {
+                                        const userId = profile.userId;
+                                        const displayName = profile.displayName;
 
-                                    fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            employeeId: qrData,
-                                            userId: userId,
-                                            displayName: displayName,
-                                            type: 'checkin',
-                                            latitude: latitude,
-                                            longitude: longitude
-                                        }),
+                                        fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                employeeId: qrData,
+                                                userId: userId,
+                                                displayName: displayName,
+                                                type: 'checkin',
+                                                latitude: latitude,
+                                                longitude: longitude
+                                            }),
+                                        });
                                     });
+                                }).catch(err => {
+                                    console.error('scanCode Error:', err);
+                                    alert('Failed to scan QR code. Please ensure you are using the LINE app.');
                                 });
-                            }).catch(err => {
-                                console.error(err);
-                                alert('Failed to scan QR code.');
+                            }, error => {
+                                console.error('Geolocation Error:', error);
+                                alert('Failed to get location.');
                             });
-                        }, error => {
-                            console.error(error);
-                            alert('Failed to get location.');
-                        });
-                    } else {
-                        alert('Geolocation is not supported by this browser.');
-                    }
-                });
+                        } else {
+                            alert('Geolocation is not supported by this browser.');
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error('LIFF Initialization Error:', err);
+                alert('Failed to initialize LIFF. Please ensure you are using the LINE app.');
             }
         }
 
