@@ -36,11 +36,14 @@
                 await liff.init({ liffId: "2005980038-vrNQp7lR" });
                 logMessage('LIFF initialized');
 
-                // if (!liff.isInClient()) {
-                //     alert('Please open this page in the LINE app.');
-                //     logMessage('Not in LINE client');
-                //     return;
-                // }
+                const isInClient = liff.isInClient();
+                logMessage('isInClient: ' + isInClient);
+
+                if (!isInClient) {
+                    alert('Please open this page in the LINE app.');
+                    logMessage('Not in LINE client');
+                    return;
+                }
 
                 if (!liff.isLoggedIn()) {
                     document.getElementById('loginButton').style.display = 'block';
@@ -52,7 +55,10 @@
                     document.getElementById('scanQrButton').style.display = 'block';
 
                     document.getElementById('scanQrButton').addEventListener('click', async () => {
-                        if (!liff.isInClient()) {
+                        const isInClientClick = liff.isInClient();
+                        logMessage('isInClient (click): ' + isInClientClick);
+
+                        if (!isInClientClick) {
                             logMessage('scanCode can only be used in the LINE app');
                             alert('Please open this page in the LINE app to scan QR code.');
                             return;
