@@ -15,6 +15,7 @@
         async function main() {
             try {
                 await liff.init({ liffId: "2005980038-vrNQp7lR" });
+                console.log('LIFF initialized');
 
                 if (!liff.isInClient()) {
                     alert('Please open this page in the LINE app.');
@@ -32,20 +33,26 @@
 
                     document.getElementById('scanQrButton').addEventListener('click', async () => {
                         if (navigator.geolocation) {
+                            console.log('Getting geolocation...');
                             navigator.geolocation.getCurrentPosition(async position => {
                                 const { latitude, longitude } = position.coords;
+                                console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
 
                                 try {
                                     const confirmPopup = confirm('Do you want to scan the QR code?');
                                     if (confirmPopup) {
+                                        console.log('Scanning QR code...');
                                         const result = await liff.scanCode();
                                         const qrData = result.value;
                                         document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
+                                        console.log(`Scanned Data: ${qrData}`);
 
                                         const profile = await liff.getProfile();
                                         const userId = profile.userId;
                                         const displayName = profile.displayName;
+                                        console.log(`UserId: ${userId}, DisplayName: ${displayName}`);
 
+                                        console.log('Sending data to server...');
                                         const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
                                             method: 'POST',
                                             headers: {
@@ -66,7 +73,6 @@
                                     } else {
                                         alert('QR code scanning canceled.');
                                     }
-                                
                                 } catch (err) {
                                     console.error('Error:', err);
                                     alert('Failed to scan QR code or send data to server.');
