@@ -59,6 +59,7 @@
                                         })
                                         .then(response => response.text())
                                         .then(data => {
+                                            console.log('Response from server:', data); // บันทึกผลตอบกลับจากเซิร์ฟเวอร์
                                             document.getElementById('result').innerText = data;
                                         })
                                         .catch(err => {
