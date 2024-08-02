@@ -36,11 +36,11 @@
                 await liff.init({ liffId: "2005980038-vrNQp7lR" });
                 logMessage('LIFF initialized');
 
-                if (!liff.isInClient()) {
-                    alert('Please open this page in the LINE app.');
-                    logMessage('Not in LINE client');
-                    return;
-                }
+                // if (!liff.isInClient()) {
+                //     alert('Please open this page in the LINE app.');
+                //     logMessage('Not in LINE client');
+                //     return;
+                // }
 
                 if (!liff.isLoggedIn()) {
                     document.getElementById('loginButton').style.display = 'block';
