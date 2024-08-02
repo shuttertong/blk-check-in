@@ -52,6 +52,12 @@
                     document.getElementById('scanQrButton').style.display = 'block';
 
                     document.getElementById('scanQrButton').addEventListener('click', async () => {
+                        if (!liff.isInClient()) {
+                            logMessage('scanCode can only be used in the LINE app');
+                            alert('Please open this page in the LINE app to scan QR code.');
+                            return;
+                        }
+
                         if (navigator.geolocation) {
                             logMessage('Getting geolocation...');
                             navigator.geolocation.getCurrentPosition(async position => {
