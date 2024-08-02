@@ -74,7 +74,7 @@
                                     const confirmPopup = confirm('Do you want to scan the QR code?');
                                     if (confirmPopup) {
                                         logMessage('Scanning QR code...');
-                                        const result = await liff.scanCode();
+                                        const result = await liff.scanCodeV2();
                                         const qrData = result.value;
                                         document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
                                         logMessage(`Scanned Data: ${qrData}`);
