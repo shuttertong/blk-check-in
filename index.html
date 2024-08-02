@@ -14,7 +14,12 @@
     <script>
         async function main() {
             try {
-                await liff.init({ liffId: "2005980038-vrNQp7lR" }); // ใช้ LIFF ID ที่ถูกต้อง
+                await liff.init({ liffId: "2005980038-vrNQp7lR" });
+
+                if (!liff.isInClient()) {
+                    alert('Please open this page in the LINE app.');
+                    return;
+                }
 
                 if (!liff.isLoggedIn()) {
                     document.getElementById('loginButton').style.display = 'block';
