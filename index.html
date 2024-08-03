@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <h1>LIFF QR Code Scanner V2 20240803</h1>
+    <h1>LIFF QR Code Scanner V3 20240803</h1>
     <button id="loginButton">Login with LINE</button>
     <button id="scanQrButton" style="display:none;">Scan QR Code</button>
     <div id="result"></div>
@@ -73,7 +73,7 @@
                                 try {
                                     const confirmPopup = confirm('Do you want to scan the QR code?');
                                     if (confirmPopup) {
-                                        logMessage('Scanning QR code... v2-20240803 v3 - 1');
+                                        logMessage('Scanning QR code... v2-20240803 v3');
                                         const result = await liff.scanCodeV2();
                                         const qrData = result.value;
                                         document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
