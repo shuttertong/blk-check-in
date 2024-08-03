@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch API Test 2 </title>
+    <title>Fetch API Test 2</title>
     <style>
         #log {
             max-height: 200px;
@@ -32,12 +32,11 @@
         async function sendRequest() {
             logMessage('Sending data to server...');
             try {
-               const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
-            method: 'POST',
-            mode: 'no-cors', // This will bypass CORS, but limits the response data
-            headers: {
-                'Content-Type': 'application/json'
-            },
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({
                         employeeId: "12345",
                         userId: "u1234567890",
@@ -47,18 +46,14 @@
                         longitude: 101.12134825310449
                     }),
                 });
-                logMessage('Response status: ' + response.status);
-                logMessage('Response status text: ' + response.statusText);
-
-                const responseData = await response.text();
-                logMessage('Response data: ' + responseData);
 
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
 
-                logMessage('Response from server: ' + responseData);
-                document.getElementById('result').innerText = responseData;
+                const responseData = await response.json();
+                logMessage('Response from server: ' + JSON.stringify(responseData));
+                document.getElementById('result').innerText = JSON.stringify(responseData);
             } catch (fetchError) {
                 console.error('Fetch Error:', fetchError);
                 alert('Failed to send data to server.');
