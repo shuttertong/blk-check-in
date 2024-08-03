@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFF QR Code Scanner V2 20240803</title>
-    <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
+    <title>Fetch API Test</title>
     <style>
         #log {
             max-height: 200px;
@@ -17,9 +16,8 @@
     </style>
 </head>
 <body>
-    <h1>LIFF QR Code Scanner V2 20240803</h1>
-    <button id="loginButton">Login with LINE</button>
-    <button id="scanQrButton" style="display:none;">Scan QR Code</button>
+    <h1>Fetch API Test</h1>
+    <button id="sendRequestButton">Send Request</button>
     <div id="result"></div>
     <div id="log"></div>
     <script>
@@ -31,137 +29,45 @@
             logDiv.scrollTop = logDiv.scrollHeight; // Scroll to the bottom
         }
 
-        function showSummary(qrData, userId, displayName, latitude, longitude) {
-            const summary = `
-                Summary Data:
-                - Employee ID: ${qrData}
-                - User ID: ${userId}
-                - Display Name: ${displayName}
-                - Latitude: ${latitude}
-                - Longitude: ${longitude}
-            `;
-            logMessage(summary);
-        }
-
-        async function main() {
+        async function sendRequest() {
+            logMessage('Sending data to server...');
             try {
-                await liff.init({ liffId: "2005980038-vrNQp7lR" });
-                logMessage('LIFF initialized');
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        employeeId: "12345",
+                        userId: "u1234567890",
+                        displayName: "John Doe",
+                        type: 'checkin',
+                        latitude: 13.44716160392881,
+                        longitude: 101.12134825310449
+                    }),
+                });
 
-                const isInClient = liff.isInClient();
-                logMessage('isInClient: ' + isInClient);
+                logMessage('Response status: ' + response.status);
+                logMessage('Response status text: ' + response.statusText);
 
-                if (!isInClient) {
-                    alert('Please open this page in the LINE app.');
-                    logMessage('Not in LINE client');
-                    return;
+                const responseData = await response.text();
+                logMessage('Response data: ' + responseData);
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
                 }
 
-                if (!liff.isLoggedIn()) {
-                    document.getElementById('loginButton').style.display = 'block';
-                    document.getElementById('loginButton').addEventListener('click', () => {
-                        liff.login();
-                    });
-                } else {
-                    document.getElementById('loginButton').style.display = 'none';
-                    document.getElementById('scanQrButton').style.display = 'block';
-
-                    document.getElementById('scanQrButton').addEventListener('click', async () => {
-                        const isInClientClick = liff.isInClient();
-                        logMessage('isInClient (click): ' + isInClientClick);
-
-                        if (!isInClientClick) {
-                            logMessage('scanCode can only be used in the LINE app');
-                            alert('Please open this page in the LINE app to scan QR code.');
-                            return;
-                        }
-
-                        if (navigator.geolocation) {
-                            logMessage('Getting geolocation...');
-                            navigator.geolocation.getCurrentPosition(async position => {
-                                const { latitude, longitude } = position.coords;
-                                logMessage(`Latitude: ${latitude}, Longitude: ${longitude}`);
-
-                                try {
-                                    const confirmPopup = confirm('Do you want to scan the QR code?');
-                                    if (confirmPopup) {
-                                        logMessage('Scanning QR code... v2-20240803 v3');
-                                        const result = await liff.scanCodeV2();
-                                        const qrData = result.value;
-                                        document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
-                                        logMessage(`Scanned Data: ${qrData}`);
-
-                                        const profile = await liff.getProfile();
-                                        const userId = profile.userId;
-                                        const displayName = profile.displayName;
-                                        logMessage(`UserId: ${userId}, DisplayName: ${displayName}`);
-
-                                        showSummary(qrData, userId, displayName, latitude, longitude);
-
-                                        logMessage('Sending data to server...');
-                                        try {
-                                            const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify({
-                                                    employeeId: qrData,
-                                                    userId: userId,
-                                                    displayName: displayName,
-                                                    type: 'checkin',
-                                                    latitude: latitude,
-                                                    longitude: longitude
-                                                }),
-                                            });
-
-                                            logMessage('Response status: ' + response.status);
-                                            logMessage('Response status text: ' + response.statusText);
-
-                                            const responseData = await response.text();
-                                            logMessage('Response data: ' + responseData);
-
-                                            if (!response.ok) {
-                                                throw new Error('Network response was not ok ' + response.statusText);
-                                            }
-
-                                            logMessage('Response from server: ' + responseData);
-                                            document.getElementById('result').innerText = responseData;
-                                        } catch (fetchError) {
-                                            console.error('Fetch Error:', fetchError);
-                                            alert('Failed to send data to server.');
-                                            logMessage('Fetch Error: ' + fetchError.message);
-                                            logMessage('Fetch Error detail: ' + JSON.stringify(fetchError));
-                                        }
-                                    } else {
-                                        alert('QR code scanning canceled.');
-                                        logMessage('QR code scanning canceled.');
-                                    }
-                                } catch (err) {
-                                    console.error('Error:', err);
-                                    alert('Failed to scan QR code or send data to server.');
-                                    logMessage('Error: ' + err.message);
-                                    logMessage('Error detail: ' + JSON.stringify(err));
-                                }
-                            }, error => {
-                                console.error('Geolocation Error:', error);
-                                alert('Failed to get location.');
-                                logMessage('Geolocation Error: ' + error.message);
-                            });
-                        } else {
-                            alert('Geolocation is not supported by this browser.');
-                            logMessage('Geolocation is not supported by this browser.');
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error('LIFF Initialization Error:', err);
-                alert('Failed to initialize LIFF. Please ensure you are using the LINE app.');
-                logMessage('LIFF Initialization Error: ' + err.message);
+                logMessage('Response from server: ' + responseData);
+                document.getElementById('result').innerText = responseData;
+            } catch (fetchError) {
+                console.error('Fetch Error:', fetchError);
+                alert('Failed to send data to server.');
+                logMessage('Fetch Error: ' + fetchError.message);
+                logMessage('Fetch Error detail: ' + JSON.stringify(fetchError));
             }
         }
 
-        main();
+        document.getElementById('sendRequestButton').addEventListener('click', sendRequest);
     </script>
 </body>
 </html>
