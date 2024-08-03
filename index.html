@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch API Test</title>
+    <title>Fetch API Test 1 </title>
     <style>
         #log {
             max-height: 200px;
@@ -33,9 +33,10 @@
             logMessage('Sending data to server...');
             try {
                 const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
+                    redirect: "follow",
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "text/plain;charset=utf-8",
                     },
                     body: JSON.stringify({
                         employeeId: "12345",
@@ -46,7 +47,6 @@
                         longitude: 101.12134825310449
                     }),
                 });
-
                 logMessage('Response status: ' + response.status);
                 logMessage('Response status text: ' + response.statusText);
 
