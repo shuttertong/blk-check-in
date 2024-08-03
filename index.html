@@ -17,11 +17,11 @@
     </style>
 </head>
 <body>
-    <h1>Login and Scan QR Code</h1>
+    <h1>LIFF QR Code Scanner V2 20240803</h1>
     <button id="loginButton">Login with LINE</button>
     <button id="scanQrButton" style="display:none;">Scan QR Code</button>
     <div id="result"></div>
-    <div id="log"></div> <!-- Add this div to display logs -->
+    <div id="log"></div>
     <script>
         function logMessage(message) {
             const logDiv = document.getElementById('log');
@@ -99,6 +99,9 @@
                                                 longitude: longitude
                                             }),
                                         });
+
+                                        logMessage('Response status: ' + response.status);
+                                        logMessage('Response status text: ' + response.statusText);
 
                                         if (!response.ok) {
                                             throw new Error('Network response was not ok ' + response.statusText);
