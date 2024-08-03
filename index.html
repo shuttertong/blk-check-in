@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFF QR Code Scanner V3 20240803</title>
+    <title>LIFF QR Code Scanner V2 20240803</title>
     <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
     <style>
         #log {
@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <h1>LIFF QR Code Scanner V3 20240803</h1>
+    <h1>LIFF QR Code Scanner V2 20240803</h1>
     <button id="loginButton">Login with LINE</button>
     <button id="scanQrButton" style="display:none;">Scan QR Code</button>
     <div id="result"></div>
@@ -29,6 +29,18 @@
             newLog.textContent = message;
             logDiv.appendChild(newLog);
             logDiv.scrollTop = logDiv.scrollHeight; // Scroll to the bottom
+        }
+
+        function showSummary(qrData, userId, displayName, latitude, longitude) {
+            const summary = `
+                Summary Data:
+                - Employee ID: ${qrData}
+                - User ID: ${userId}
+                - Display Name: ${displayName}
+                - Latitude: ${latitude}
+                - Longitude: ${longitude}
+            `;
+            logMessage(summary);
         }
 
         async function main() {
@@ -83,6 +95,8 @@
                                         const userId = profile.userId;
                                         const displayName = profile.displayName;
                                         logMessage(`UserId: ${userId}, DisplayName: ${displayName}`);
+
+                                        showSummary(qrData, userId, displayName, latitude, longitude);
 
                                         logMessage('Sending data to server...');
                                         const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
