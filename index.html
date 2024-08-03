@@ -85,7 +85,7 @@
                                 try {
                                     const confirmPopup = confirm('Do you want to scan the QR code?');
                                     if (confirmPopup) {
-                                        logMessage('Scanning QR code... v2-20240803 v2');
+                                        logMessage('Scanning QR code... v2-20240803 v3');
                                         const result = await liff.scanCodeV2();
                                         const qrData = result.value;
                                         document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
@@ -134,6 +134,7 @@
                                     console.error('Error:', err);
                                     alert('Failed to scan QR code or send data to server.');
                                     logMessage('Error: ' + err.message);
+                                    logMessage('Error detail: ' + JSON.stringify(err));
                                 }
                             }, error => {
                                 console.error('Geolocation Error:', error);
