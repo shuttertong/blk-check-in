@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIFF QR Code Scanner V4 20240803</title>
+    <title>LIFF QR Code Scanner V5 20240803</title>
     <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
     <style>
         #log {
@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <h1>LIFF QR Code Scanner V4 20240803</h1>
+    <h1>LIFF QR Code Scanner V5 20240803</h1>
     <button id="loginButton">Login with LINE</button>
     <button id="scanQrButton" style="display:none;">Scan QR Code</button>
     <div id="result"></div>
@@ -85,7 +85,7 @@
                                 try {
                                     const confirmPopup = confirm('Do you want to scan the QR code?');
                                     if (confirmPopup) {
-                                        logMessage('Scanning QR code... v4-20240803 v4');
+                                        logMessage('Scanning QR code... v2-20240803 v3');
                                         const result = await liff.scanCodeV2();
                                         const qrData = result.value;
                                         document.getElementById('result').innerText = `Scanned Data: ${qrData}`;
@@ -99,10 +99,13 @@
                                         showSummary(qrData, userId, displayName, latitude, longitude);
 
                                         logMessage('Sending data to server...');
+
+                                        // Update the fetch request to include additional headers if necessary
                                         const response = await fetch('https://script.google.com/macros/s/AKfycbzKTURYxnHromo217SMIRlezEhj23cHwSohYcrMbh38OOyhlCtGamBcbvAtfLrM8qg9Qw/exec', {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json',
+                                                'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // Example of adding additional headers
                                             },
                                             body: JSON.stringify({
                                                 employeeId: qrData,
@@ -110,7 +113,8 @@
                                                 displayName: displayName,
                                                 type: 'checkin',
                                                 latitude: latitude,
-                                                longitude: longitude
+                                                longitude: longitude,
+                                                additionalData: 'example', // Example of adding additional data
                                             }),
                                         });
 
