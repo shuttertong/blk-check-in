@@ -103,13 +103,15 @@
                                         logMessage('Response status: ' + response.status);
                                         logMessage('Response status text: ' + response.statusText);
 
+                                        const responseData = await response.text();
+                                        logMessage('Response data: ' + responseData);
+
                                         if (!response.ok) {
                                             throw new Error('Network response was not ok ' + response.statusText);
                                         }
 
-                                        const data = await response.text();
-                                        logMessage('Response from server: ' + data);
-                                        document.getElementById('result').innerText = data;
+                                        logMessage('Response from server: ' + responseData);
+                                        document.getElementById('result').innerText = responseData;
                                     } else {
                                         alert('QR code scanning canceled.');
                                         logMessage('QR code scanning canceled.');
